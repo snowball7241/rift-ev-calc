@@ -1,0 +1,55 @@
+{
+ "categoryId": 89,
+ "fetchedAt": "2026-11-21T21:51:26.979Z",
+ "source": "https://tcgcsv.com",
+ "sets": [
+  {
+   "groupId": 24832,
+   "name": "Legacy",
+   "abbr": "LGC",
+   "publishedOn": "2027-01-29T00:00:00",
+   "file": "set-24832.json",
+   "cardCount": 0
+  },
+  {
+   "groupId": 24819,
+   "name": "Radiance",
+   "abbr": "RAD",
+   "publishedOn": "2026-10-23T00:00:00",
+   "file": "set-24819.json",
+   "cardCount": 246
+  },
+  {
+   "groupId": 24698,
+   "name": "Vendetta",
+   "abbr": "VEN",
+   "publishedOn": "2026-07-31T00:00:00",
+   "file": "set-24698.json",
+   "cardCount": 254
+  },
+  {
+   "groupId": 24560,
+   "name": "Unleashed",
+   "abbr": "UNL",
+   "publishedOn": "2026-05-08T00:00:00",
+   "file": "set-24560.json",
+   "cardCount": 314
+  },
+  {
+   "groupId": 24519,
+   "name": "Spiritforged",
+   "abbr": "SFD",
+   "publishedOn": "2026-02-13T00:00:00",
+   "file": "set-24519.json",
+   "cardCount": 309
+  },
+  {
+   "groupId": 24344,
+   "name": "Origins",
+   "abbr": "OGN",
+   "publishedOn": "2025-10-31T00:00:00",
+   "file": "set-24344.json",
+   "cardCount": 359
+  }
+ ]
+}

@@ -1,0 +1,70 @@
+name: Refresh prices and deploy
+
+# tcgcsv.com refreshes TCGplayer data once a day (~20:00 UTC) and does not send
+# CORS headers, so the browser can't fetch it directly. This job snapshots the
+# prices into data/ and publishes the static site to GitHub Pages.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "30 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch prices from tcgcsv.com
+        run: node scripts/fetch-prices.mjs
+
+      - name: Sanity check EV engine
+        run: node scripts/check-ev.mjs
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "No price changes"
+          else
+            git commit -m "Refresh prices $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp index.html app.js ev.js rates.js style.css .nojekyll _site/
+          cp -r data _site/
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

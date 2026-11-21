@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Riftbound Pack EV</title>
+  <meta name="description" content="Expected value calculator for Riftbound booster packs and displays, using TCGplayer prices via tcgcsv.com, with Ultimate rares modelled at their own published rates." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div>
+        <h1>Riftbound Pack EV</h1>
+        <p class="sub" id="priceStamp">Loading prices…</p>
+      </div>
+      <label class="set-pick">
+        <span>Set</span>
+        <select id="setSelect" aria-label="Set"></select>
+      </label>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="warn" class="banner" hidden></div>
+
+    <section class="kpis" id="kpis" aria-live="polite"></section>
+
+    <section class="panel" id="ultimatePanel" hidden></section>
+
+    <div class="grid2">
+      <section class="panel">
+        <h2>Where the value comes from</h2>
+        <div class="table-scroll"><table class="tbl" id="breakdown"></table></div>
+        <p class="fine">Expected count per pack × average price of the cards in that category. Within a category every card is treated as equally likely. Riot hasn't said otherwise, but hasn't promised it either.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Opening a display (simulated)</h2>
+        <div id="sim"></div>
+        <p class="fine">Monte Carlo of 20,000 displays of 24 packs, using the same slot model. EV is an average that a few huge hits pull upward. The median is what a typical box is actually worth.</p>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Assumptions</h2>
+        <button type="button" class="btn" id="resetBtn">Reset to defaults</button>
+      </div>
+      <div class="grid2 tight">
+        <div>
+          <h3>Pricing</h3>
+          <div class="form">
+            <label>Price
+              <select id="priceField">
+                <option value="market">TCGplayer Market</option>
+                <option value="mid">Mid</option>
+                <option value="low">Low listing</option>
+              </select>
+            </label>
+            <label>You keep (after fees / selling discount)
+              <span class="suffix"><input type="number" id="sellThrough" min="0" max="100" step="1" /> %</span>
+            </label>
+            <label>Bulk: cards under
+              <span class="suffix">$ <input type="number" id="bulkThreshold" min="0" step="0.05" /></span>
+            </label>
+            <label>are worth
+              <span class="suffix">$ <input type="number" id="bulkValue" min="0" step="0.01" /></span>
+            </label>
+          </div>
+          <h3>Foil slot rarity mix</h3>
+          <div class="form" id="foilForm"></div>
+          <p class="fine">Riot hasn't published foil-slot odds. It's "mostly" Common/Uncommon, with occasional Rare/Epic upgrades.</p>
+        </div>
+        <div>
+          <h3>Pull rates (expected per pack)</h3>
+          <div id="rateForm" class="rates"></div>
+          <p class="fine">Enter as "1 in N packs" or a percentage. <span class="tag official">official</span> Riot-published, <span class="tag community">community</span> opening samples, <span class="tag assumed">assumed</span> no data.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Cards that drive the EV</h2>
+      <div class="table-scroll"><table class="tbl" id="topCards"></table></div>
+    </section>
+
+    <section class="panel method">
+      <h2>How it's calculated</h2>
+      <ol>
+        <li><b>Pack layout.</b> 14 cards: 7 Common, 3 Uncommon, 2 Rare-or-better, 1 Foil, 1 Rune/Token. 24 packs per display.</li>
+        <li><b>Hits replace Rares.</b> Epics, Alt Arts, Special Arts, Overnumbered, Signature and Ultimate cards take a Rare-or-better slot, so expected Rares = 2 − (all those rates). They are never extra cards on top of the 14.</li>
+        <li><b>Ultimates get their own rate.</b> Riot publishes each Ultimate's odds directly: Unleashed's Baron Nashor in <em>"&lt; 0.1% of packs"</em>, Radiance's Packed Amphitheater in about 0.025% (≈1 in 4,000). Common mistakes:
+          <ul>
+            <li>Putting the Ultimate in the Overnumbered/Showcase pool and splitting one rate evenly. For Radiance this gives about 1 in 1,400 instead of 1 in 4,000, which nearly triples its value.</li>
+            <li>Reading "&lt; 0.1%" as exactly 0.1%. It's an upper bound, so the Baron's contribution here is a ceiling.</li>
+            <li>Applying per-display or per-case odds as if they were per-pack, or assuming one is guaranteed per case. Riot says none is guaranteed in any pack, box or case.</li>
+            <li>Matching by card name. "Baron Nashor (Alternate Art)" at ~$40 is a different product from the Ultimate. This tool matches TCGplayer's <code>(Ultimate)</code> printing.</li>
+          </ul>
+        </li>
+        <li><b>Prices.</b> Daily TCGplayer snapshot from <a href="https://tcgcsv.com" rel="noopener">tcgcsv.com</a>. Rares, Epics and Showcase cards are foil printings, so their foil price is used. Commons/Uncommons use non-foil, except in the foil slot. Promo-only printings are excluded.</li>
+        <li><b>EV isn't profit.</b> Market price is not what you get selling singles. Use the "you keep" setting for fees, shipping and sell-through. Chase cards also move fast.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    Prices via <a href="https://tcgcsv.com" rel="noopener">tcgcsv.com</a> (TCGplayer data). Not affiliated with Riot Games or TCGplayer. Pull rates are estimates; check the tags above.
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
