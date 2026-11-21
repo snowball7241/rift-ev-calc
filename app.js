@@ -3,7 +3,8 @@ import { PROFILES, FALLBACK_PROFILE, CATEGORY_META, PACKS_PER_DISPLAY } from "./
 
 const $ = (id) => document.getElementById(id);
 const RATE_KEYS = ["epic", "altArt", "specialArt", "overnumbered", "signature", "ultimate", "altRune"];
-const PRICING_DEFAULTS = { priceField: "market", sellThrough: 100, bulkThreshold: 0, bulkValue: 0 };
+// Cards under $1 count as $0 by default: bulk rarely sells individually at market price.
+const PRICING_DEFAULTS = { priceField: "market", sellThrough: 100, bulkThreshold: 1, bulkValue: 0 };
 
 const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },

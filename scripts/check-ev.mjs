@@ -14,7 +14,8 @@ for (const s of idx.sets) {
   const prof = PROFILES[s.abbr];
   if (!prof || !set.cards.length) { console.log(`\n${s.abbr}: skipped (no profile or no cards)`); continue; }
   const rates = Object.fromEntries(Object.entries(prof.rates).map(([k, v]) => [k, v.v]));
-  const m = buildModel(set, rates, prof.foil, { priceField: "market", sellThrough: 1 });
+  // Same defaults as the site: cards under $1 count as $0.
+  const m = buildModel(set, rates, prof.foil, { priceField: "market", sellThrough: 1, bulkThreshold: 1, bulkValue: 0 });
   const sim = simulate(m, { boxes: 20000 });
   console.log(
     `\n${s.abbr} EV/pack $${m.total.toFixed(2)} (pack $${set.sealed.pack?.market}) | box EV $${(m.total * 24).toFixed(0)}, ` +

@@ -14,6 +14,8 @@ uses TCGplayer prices from [tcgcsv.com](https://tcgcsv.com) and runs on GitHub P
   Rare-or-better slots. They are not added on top of the 14 cards.
 - **Median vs mean.** A 20,000-display Monte Carlo shows what a *typical* box is
   worth and the chance a box beats its sealed price, not just EV.
+- **Bulk counts as $0 by default.** Cards listed under $1 are valued at $0, since
+  they rarely sell one by one. This is adjustable on the page.
 - Every rate is editable and labelled *official* / *community* / *assumed*.
   Overrides are saved per browser.
 
